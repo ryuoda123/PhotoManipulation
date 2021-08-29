@@ -8,6 +8,7 @@ from PIL import Image
 import Cartoon
 import Paint
 import Sketch
+import os
 
 class GUI():
     def __init__(self, master):
@@ -49,14 +50,28 @@ class GUI():
             self.createCbox()
         
     def createButtons(self):
+        self.label1 = tk.Label(self.cp, text="Do you have a picture you \nwant to manipulate? \ntype in the directory "
+                                             "here!")
+        self.label1.place(relx=0.5, rely=0.1, anchor="center")
+
+        self.tBox = tk.Text(self.cp, bg="white", height=1, width=20)
+        self.tBox.place(relx=0.5, rely=0.3, anchor="center")
+
+        self.loadImageButton = tk.Button(self.cp, text="LoadImage")
+        self.loadImageButton["command"] = self.loadImageButtonPressed
+        self.loadImageButton.place(relx=0.5, rely=0.4, anchor="center")
+
         self.takePhotoButton = tk.Button(self.cp, text="Re-take Photo")
         self.takePhotoButton["command"] = self.takePhoto
         self.takePhotoButton.place(relx=0.5, rely=0.8, anchor="center")
+
+
+
         
         
     def createCbox(self):
-        self.label = tk.Label(self.cp, text="Choose the picture style!")
-        self.label.place(relx=0.5, rely=0.1, anchor="center")
+        self.label2 = tk.Label(self.cp, text="Choose the picture style!")
+        self.label2.place(relx=0.5, rely=0.1, anchor="center")
         self.comboBox = ttk.Combobox(self.cp, textvariable=tk.StringVar())
         self.comboBox['values'] = ('Original', 'Cartoon', 'Sketch', 'Paint')
         self.comboBox.current(0)
@@ -67,6 +82,7 @@ class GUI():
         self.changeButton.place(relx=0.5, rely=0.5, anchor="center")
         
     def takePhoto(self):
+        self.labelWarning.destroy()
         self.tphoto.vid()
         self.changeImage("Screenshot")
         
@@ -79,7 +95,7 @@ class GUI():
     
     def changeButtonPressed(self):
         boxStr = self.comboBox.get()
-        print(boxStr)
+        self.labelWarning.destroy()
         
         if boxStr == "Original":
             self.changeImage("Screenshot")
@@ -97,4 +113,20 @@ class GUI():
             self.changeImage("Cartoon")
             
         
-        
+    def loadImageButtonPressed(self):
+        txtStr = self.tBox.get(1.0, tk.END+"-1c")
+        if os.path.isfile(txtStr):
+            if txtStr[-4:] == "jpeg" or txtStr[-3] == "jpg":
+                img = cv2.imread(txtStr)
+                cv2.imwrite("./Screenshot.jpeg", img)
+                self.changeImage("Screenshot")
+                self.labelWarning.destroy()
+            else:
+                self.labelWarning = tk.Label(self.cp, text="This software only supports jpeg or jpg type")
+                self.labelWarning.place(relx=0.5, rely=0.5, anchor="center")
+        else:
+            self.labelWarning = tk.Label(self.cp, text="Directory entered does not exist")
+            self.labelWarning.place(relx=0.5, rely=0.5, anchor="center")
+
+
+
