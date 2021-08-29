@@ -82,7 +82,6 @@ class GUI():
         self.changeButton.place(relx=0.5, rely=0.5, anchor="center")
         
     def takePhoto(self):
-        self.labelWarning.destroy()
         self.tphoto.vid()
         self.changeImage("Screenshot")
         
@@ -95,7 +94,6 @@ class GUI():
     
     def changeButtonPressed(self):
         boxStr = self.comboBox.get()
-        self.labelWarning.destroy()
         
         if boxStr == "Original":
             self.changeImage("Screenshot")
@@ -120,7 +118,6 @@ class GUI():
                 img = cv2.imread(txtStr)
                 cv2.imwrite("./Screenshot.jpeg", img)
                 self.changeImage("Screenshot")
-                self.labelWarning.destroy()
             else:
                 self.labelWarning = tk.Label(self.cp, text="This software only supports jpeg or jpg type")
                 self.labelWarning.place(relx=0.5, rely=0.5, anchor="center")
